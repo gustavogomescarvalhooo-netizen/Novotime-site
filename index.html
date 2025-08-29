@@ -190,3 +190,241 @@
 </script> 
 </body> 
 </html>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NovoTime - E-commerce Simulado</title>
+  <style>
+    body { 
+      font-family: 'Arial', sans-serif; 
+      background: #111; 
+      color: #fff; 
+      margin: 0; 
+      padding: 0; 
+    }
+
+    header { 
+      background: #000; 
+      padding: 20px; 
+      text-align: center; 
+      position: sticky; 
+      top: 0; 
+      z-index: 100; 
+    }
+
+    h1 { 
+      margin: 0; 
+      color: #0f0; 
+      font-size: 2.2em;
+      text-shadow: 2px 2px #000;
+    }
+
+    input, select { 
+      padding: 10px; 
+      margin: 10px 5px; 
+      border-radius: 5px; 
+      border: none; 
+      outline: none;
+    }
+
+    input { width: 200px; }
+
+    #carrinho {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #0f0;
+      color: #000;
+      padding: 10px 15px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 200;
+    }
+
+    #detalhes-carrinho {
+      position: fixed;
+      top: 60px;
+      right: 20px;
+      background: #222;
+      color: #0f0;
+      padding: 15px;
+      border-radius: 10px;
+      width: 300px;
+      max-height: 400px;
+      overflow-y: auto;
+      display: none;
+      border: 2px solid #0f0;
+      z-index: 200;
+    }
+
+    #detalhes-carrinho h3 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    .item-carrinho {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .item-carrinho button {
+      background: #0f0;
+      border: none;
+      color: #000;
+      padding: 2px 5px;
+      margin-left: 5px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+
+    .subtotal {
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: right;
+    }
+
+    .finalizar {
+      display: block;
+      margin: 10px auto 0;
+      padding: 10px;
+      background: #0f0;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.3s;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .finalizar:hover { background: #0c0; }
+
+    .produtos { 
+      display: flex; 
+      flex-wrap: wrap; 
+      justify-content: center; 
+      padding: 20px; 
+      gap: 20px; 
+    }
+
+    .produto { 
+      background: #222; 
+      border: 2px solid #0f0; 
+      border-radius: 10px; 
+      width: 220px; 
+      text-align: center; 
+      padding: 15px; 
+      transition: transform 0.3s, box-shadow 0.3s; 
+    }
+
+    .produto:hover { 
+      transform: translateY(-10px); 
+      box-shadow: 0 0 20px #0f0; 
+    }
+
+    .produto img { 
+      width: 100%; 
+      height: auto; 
+      border-radius: 10px;
+      margin-bottom: 10px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .preco { 
+      color: #0f0; 
+      font-weight: bold; 
+      margin-top: 10px; 
+      font-size: 1.2em; 
+    }
+
+    .botao-comprar {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 15px;
+      background: #0f0;
+      color: #000;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background 0.3s, transform 0.3s;
+      cursor: pointer;
+    }
+
+    .botao-comprar:hover {
+      background: #0c0;
+      transform: scale(1.05);
+    }
+
+    @media(max-width: 600px){
+      .produtos { flex-direction: column; align-items: center; }
+      #detalhes-carrinho { width: 90%; right: 5%; }
+      .produto { width: 90%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>NovoTime</h1>
+    <input type="text" id="busca" placeholder="Buscar produto...">
+    <select id="filtro">
+      <option value="">Todas categorias</option>
+      <option value="camisa">Camisa</option>
+      <option value="short">Short</option>
+      <option value="bola">Bola</option>
+      <option value="chuteira">Chuteira</option>
+      <option value="meia">Meia</option>
+    </select>
+  </header>
+
+  <div id="carrinho">Carrinho: 0</div>
+  <div id="detalhes-carrinho">
+    <h3>Carrinho</h3>
+    <div id="itens-carrinho"></div>
+    <div class="subtotal" id="subtotal">Subtotal: R$ 0,00</div>
+    <a id="link-finalizar" class="finalizar" href="#" target="_blank">Finalizar Compra</a>
+  </div>
+
+  <div class="produtos" id="lista-produtos"></div>
+
+  <script>
+    const produtos = [
+      { nome: "Camisa Flamengo 1ª linha", categoria: "camisa", preco: 89.90, img: "https://media.giphy.com/media/26BRuo6sLetdllPAQ/giphy.gif", link: "https://shopee.com.br" },
+      { nome: "Short Atlético", categoria: "short", preco: 49.90, img: "https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif", link: "https://mercadolivre.com.br" },
+      { nome: "Chuteira Society Nike", categoria: "chuteira", preco: 159.90, img: "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif", link: "https://amazon.com.br" },
+      { nome: "Meia esportiva Nike", categoria: "meia", preco: 19.90, img: "https://media.giphy.com/media/3oKIPwoeGErMmaI43C/giphy.gif", link: "https://shopee.com.br" },
+      { nome: "Bola Campo Penalty", categoria: "bola", preco: 99.90, img: "https://media.giphy.com/media/3oEjHGrVGrqgFFknfO/giphy.gif", link: "https://mercadolivre.com.br" }
+    ];
+
+    const lista = document.getElementById("lista-produtos");
+    const busca = document.getElementById("busca");
+    const filtro = document.getElementById("filtro");
+    const carrinhoBtn = document.getElementById("carrinho");
+    const detalhesCarrinho = document.getElementById("detalhes-carrinho");
+    const itensCarrinhoDiv = document.getElementById("itens-carrinho");
+    const subtotalDiv = document.getElementById("subtotal");
+    const linkFinalizar = document.getElementById("link-finalizar");
+
+    let carrinho = [];
+
+    function renderizarProdutos() {
+      const termo = busca.value.toLowerCase();
+      const categoria = filtro.value;
+
+      const filtrados = produtos.filter(p =>
+        p.nome.toLowerCase().includes(termo) &&
+        (categoria === "" || p.categoria === categoria)
+      );
+
+      lista.innerHTML = "";
