@@ -1,0 +1,192 @@
+<!DOCTYPE html> 
+<html lang="pt-BR"> 
+<head> 
+<meta charset="UTF-8" /> 
+<meta name="viewport" content="width=device-width, initial-scale=1" /> 
+<title>NovoTime - Loja Esportiva</title> 
+<style> 
+  body { 
+    background: #000; 
+    color: #eee; 
+    font-family: Arial, sans-serif; 
+    margin: 0; padding: 0; 
+  } 
+  header { 
+    background: #111; 
+    padding: 15px 20px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+  } 
+  header h1 { 
+    margin: 0; 
+    font-weight: 700; 
+    font-size: 1.8rem; 
+    color: #f90; 
+  } 
+  .search-bar input { 
+    padding: 8px 12px; 
+    font-size: 1rem; 
+    border-radius: 4px; 
+    border: none; 
+    width: 250px; 
+  } 
+  main { 
+    display: flex; 
+    padding: 20px; 
+    gap: 20px; 
+  } 
+  aside { 
+    width: 220px; 
+    background: #111; 
+    padding: 15px; 
+    border-radius: 8px; 
+    height: fit-content; 
+  } 
+  aside h2 { 
+    font-size: 1.2rem; 
+    margin-bottom: 10px; 
+    color: #f90; 
+  } 
+  aside label { 
+    display: block; 
+    margin: 10px 0; 
+    cursor: pointer; 
+  } 
+  .products { 
+    flex: 1; 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); 
+    gap: 20px; 
+  } 
+  .product-card { 
+    background: #222; 
+    border-radius: 8px; 
+    padding: 15px; 
+    text-align: center; 
+    transition: transform 0.2s ease; 
+  } 
+  .product-card:hover { 
+    transform: scale(1.05); 
+  } 
+  .product-card img { 
+    max-width: 100%; 
+    border-radius: 6px; 
+  } 
+  .product-name { 
+    margin: 10px 0 5px 0; 
+    font-weight: 700; 
+  } 
+  .product-price { 
+    color: #f90; 
+    font-weight: bold; 
+    margin-bottom: 10px; 
+  } 
+  button.add-cart { 
+    background: #f90; 
+    border: none; 
+    color: #000; 
+    padding: 8px 12px; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-weight: 700; 
+    transition: background 0.3s ease; 
+  } 
+  button.add-cart:hover { 
+    background: #c77000; 
+  } 
+  footer { 
+    background: #111; 
+    color: #ccc; 
+    text-align: center; 
+    padding: 20px; 
+    margin-top: 30px; 
+    font-size: 0.9rem; 
+  } 
+  .contact-info { 
+    margin-top: 10px; 
+  } 
+  @media(max-width: 720px){ 
+    main { 
+      flex-direction: column; 
+    } 
+    aside { 
+      width: 100%; 
+      display: flex; 
+      justify-content: space-around; 
+      padding: 10px 0; 
+    } 
+    aside label { 
+      margin: 0 10px; 
+    } 
+    .products { 
+      grid-template-columns: repeat(auto-fill,minmax(140px,1fr)); 
+    } 
+  } 
+</style> 
+</head> 
+<body> 
+<header> 
+  <h1>NovoTime</h1> 
+  <div class="search-bar"> 
+    <input type="text" id="searchInput" placeholder="Buscar produtos..." oninput="filterProducts()" /> 
+  </div> 
+</header> 
+<main> 
+  <aside> 
+    <h2>Categorias</h2> 
+    <label><input type="checkbox" class="category" value="Camisas" onchange="filterProducts()" checked /> Camisas</label> 
+    <label><input type="checkbox" class="category" value="Meias" onchange="filterProducts()" checked /> Meias</label> 
+    <label><input type="checkbox" class="category" value="Shorts" onchange="filterProducts()" checked /> Shorts</label> 
+    <label><input type="checkbox" class="category" value="Chuteiras" onchange="filterProducts()" checked /> Chuteiras</label> 
+    <label><input type="checkbox" class="category" value="Bolas" onchange="filterProducts()" checked /> Bolas</label> 
+  </aside> 
+  <section class="products" id="productList"></section> 
+</main> 
+<footer> 
+  Contato: gustavogomescarvalhooo@gmail.com | WhatsApp: (62) 99180-6156 
+</footer> 
+<script> 
+  const products = [ 
+    {id:1, name:"Camisa Oficial Time A", category:"Camisas", price: 99.90, img:"https://cf.shopee.com.br/file/4e6ff0bf6678c5c2f9f28f8a2aef49a4"}, 
+    {id:2, name:"Meias Esportivas Pretas", category:"Meias", price: 19.90, img:"https://cf.shopee.com.br/file/cf3a9a0a77be95b952d91f3a3747a02c"}, 
+    {id:3, name:"Shorts Esportivos", category:"Shorts", price: 49.90, img:"https://cf.shopee.com.br/file/87f232f0d045a0c7e37e60a41a8d5c3f"}, 
+    {id:4, name:"Chuteira Profissional", category:"Chuteiras", price: 199.90, img:"https://cf.shopee.com.br/file/2e7d64a3a9347a5079d13cc03cfa8d56"}, 
+    {id:5, name:"Bola Oficial Futebol", category:"Bolas", price: 89.90, img:"https://cf.shopee.com.br/file/7a22d3e02a5eb4b43289f8e721a5f4cc"}, 
+    {id:6, name:"Camisa Time B", category:"Camisas", price: 109.90, img:"https://cf.shopee.com.br/file/52b30f5e14fa11acbfaa7e8d67b3d6c2"}, 
+    {id:7, name:"Meias Coloridas", category:"Meias", price: 24.90, img:"https://cf.shopee.com.br/file/6987d6be9d614b0a0e6fa62b8a54c4d3"}, 
+    {id:8, name:"Shorts Curto", category:"Shorts", price: 39.90, img:"https://cf.shopee.com.br/file/7c0d524ea5a6a2b3b1a52a7d645349a4"}, 
+    {id:9, name:"Chuteira Infantil", category:"Chuteiras", price: 149.90, img:"https://cf.shopee.com.br/file/feb18a3a7c03c1d97a3b96c63e5737d6"}, 
+    {id:10, name:"Bola Futsal", category:"Bolas", price: 59.90, img:"https://cf.shopee.com.br/file/b3b4cc5b0419a8a0bf9aaf7d7f2de19c"} 
+  ]; 
+  const productListEl = document.getElementById("productList"); 
+  function displayProducts(list) { 
+    productListEl.innerHTML = ""; 
+    if(list.length === 0){ 
+      productListEl.innerHTML = "<p>Nenhum produto encontrado.</p>"; 
+      return; 
+    } 
+    list.forEach(p => { 
+      const card = document.createElement("div"); 
+      card.className = "product-card"; 
+      card.innerHTML = ` 
+        <img src="${p.img}" alt="${p.name}" /> 
+        <div class="product-name">${p.name}</div> 
+        <div class="product-price">R$ ${p.price.toFixed(2)}</div> 
+        <button class="add-cart" onclick="alert('Produto adicionado ao carrinho!')">Adicionar ao carrinho</button> 
+      `; 
+      productListEl.appendChild(card); 
+    }); 
+  } 
+  function filterProducts() { 
+    const searchText = document.getElementById("searchInput").value.toLowerCase(); 
+    const checkedCats = Array.from(document.querySelectorAll(".category:checked")).map(c => c.value); 
+    const filtered = products.filter(p =>  
+      p.name.toLowerCase().includes(searchText) && checkedCats.includes(p.category) 
+    ); 
+    displayProducts(filtered); 
+  } 
+  displayProducts(products); 
+</script> 
+</body> 
+</html>
